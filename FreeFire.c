@@ -15,9 +15,13 @@ struct Item {
 void AdicionarItem(struct Item mochila[], int *i);
 void ListarItem(struct Item mochila[], int total);
 void RemoverItem(struct Item mochila[], int *i);
+void CommitRemoverItem();
+void CommitAddItem();
 void MenuPrincipal();
+void MochilaStatus(int total);
 
 int main() {
+    printf("=========================\nFRI FAIRI");
     MenuPrincipal();
     return 0;
 }
@@ -32,44 +36,49 @@ void MenuPrincipal()
     struct Item mochila[TAM_MAXIMO];
     int opcao = 0;
     int i = 0;
-    do {  
-        printf("=========================\nFRI FAIRI\n=========================\n");
+    do {
+        printf("\n=========================\n");
         printf("Escolha uma ação:\n1 - PEGAR ITEM\n2- REMOVER ITEM\n3 - LISTAR ITENS\n0 - SAIR DO JOGO\n\nOPCAO SELECIONADA:");
         scanf("%d", &opcao);
+        getchar();
 
-        getchar(); 
-
-        switch (opcao) {
+        if (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 0) {
+        printf("[!] OPÇÃO INVALIDA!\n");
+        return;
+        } else {
+            switch (opcao) {
+                
+                case 1:
+                AdicionarItem(mochila, &i);
+                MochilaStatus(i);
+                break; 
             
-            case 1:
-            AdicionarItem(mochila, &i);
-            break; 
-        
-            case 2:
-            RemoverItem(mochila, &i);
-            break;
+                case 2:
+                RemoverItem(mochila, &i);
+                MochilaStatus(i);
+                break;
 
-            case 3:
-            ListarItem(mochila, i);
-            break;
+                case 3:
+                ListarItem(mochila, i);
+                MochilaStatus(i);
+                break;
 
-            case 0:
-            printf("Vacilao, vai correr da guerra? kkkkk");
-
-            default:
-            printf("OPCAO INVALIDA!\n");
-            break;
-            }
+                case 0:
+                printf("[?] Vacilao, correu do battle royale? kkkkk");
+                printf("=====================\n[XD] Brincadeiras a parte, bom jogo, até a próxima! <3");
+                break;
+                }
+        } 
     } while (opcao != 0);
 }
 
-void AdicionarItem(struct Item mochila[], int *i) { 
+void AdicionarItem(struct Item mochila[], int *i) {
     if (*i>= TAM_MAXIMO) {
     printf("Mochila cheia!\n");
     return;
     } else {
     // NOME DO ITEM
-        printf("Adicionando Item...\n");
+        printf("Adicionando Item...\n=========================\n");
         printf("Digite o nome do item que voce deseja adicionar à mochila: ");
         fgets(mochila[*i].nome, 50, stdin);
         mochila[*i].nome[strcspn(mochila[*i].nome, "\n")] = 0;
@@ -85,13 +94,14 @@ void AdicionarItem(struct Item mochila[], int *i) {
         getchar();
 
         (*i)++;
+        CommitAddItem(mochila, &i);
     }
 }
 
 void ListarItem(struct Item mochila[], int total) {
     printf("\nItens dentro da mochila...\n");
     if (total == 0) {
-    printf("A mochila esta vazia!\n");
+    printf("[!] A mochila esta vazia!\n");
     } else {
         for (int j = 0; j < total; j++) {
         printf("=========================\n");
@@ -105,7 +115,7 @@ void ListarItem(struct Item mochila[], int total) {
 
 void RemoverItem(struct Item mochila[], int *i) {
 
-    // 1. SE N TEM NADA, N DA PRA ESVAZIAR NEH
+    // SE N TEM NADA, N DA PRA ESVAZIAR NEH
     if (*i == 0) {
         printf("=========================\n");
         printf("\n[!] A mochila ja esta vazia!\n");
@@ -113,7 +123,7 @@ void RemoverItem(struct Item mochila[], int *i) {
         return;
     }
 
-    // 2. FUNCAO CHAMADA PARA QUE O USUARIO NAO TENHA CARGA COGNITIVA DE PRECISAR LEMBRAR QUAL ERA A POSICAO DO ITEM, BASTA VER.
+    // FUNCAO CHAMADA PARA QUE O USUARIO NAO TENHA CARGA COGNITIVA DE PRECISAR LEMBRAR QUAL ERA A POSICAO DO ITEM, BASTA VER.
     ListarItem(mochila, *i);
 
     int posicao;
@@ -123,7 +133,7 @@ void RemoverItem(struct Item mochila[], int *i) {
     scanf("%d", &posicao);
     getchar();
 
-    // 3. Ajusta o número que o usuário digitou para o índice do C (começa em 0)
+    // Ajusta o número que o usuário digitou para o índice do C (começa em 0)
     int indice = posicao - 1;
 
     // 4. Verifica se a posição escolhida é válida
@@ -136,14 +146,31 @@ void RemoverItem(struct Item mochila[], int *i) {
 
         // 5. Atualiza o contador oficial lá no MenuPrincipal usando o ponteiro
         (*i)--; 
-        
-        printf("\n[OK] Item removido com sucesso.\n");
          printf("=========================\n");
     } else {
         printf("\n[!] Posicao invalida!\n");
          printf("=========================\n");
     }
 }
+    void CommitRemoverItem() {
+    printf("\n[OK] Item removido com sucesso.\n");
+    }
+
+    void CommitAddItem() {
+    printf("\n[OK] Item coletado com sucesso.\n");
+    }
+    
+    void MochilaStatus(int total) {
+    printf("\n>>> Itens: %d/%d <<<", total, TAM_MAXIMO);
+    if (total == TAM_MAXIMO) {
+        printf(" [MOCHILA LOTADA]");
+    }
+    printf("\n");
+}
+
+
+
+
 
 
 
